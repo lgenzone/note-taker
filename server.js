@@ -1,3 +1,4 @@
+require('dotenv').config();
 //import express and path 
 const fs = require('fs');
 const express = require('express');
@@ -6,7 +7,7 @@ const {notes} = require('./db/db.json');
 
 // server 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // use files from public 
 app.use(express.static('public'));
