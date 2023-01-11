@@ -53,7 +53,7 @@ app.get('/api/notes', (req, res) => {
     res.json(results)
 })
 
-// delete - not working
+/*
 function findIndex(id, notesArray) {
     const deletedNote =  id;
     for (let i = 0; i < notesArray.length; i++) {
@@ -68,7 +68,7 @@ function findIndex(id, notesArray) {
         }
     }
 }
-/*
+
 app.delete('/api/notes/:id', (req, res) => {
     let notes = JSON.parse(fs.readFileSync('./db/db.json'));
     const notesIndex = notes.findIndex((note) => note.id === req.params.id)
