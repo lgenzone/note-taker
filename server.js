@@ -4,6 +4,7 @@ const fs = require('fs');
 const express = require('express');
 const path = require('path');
 const {notes} = require('./db/db.json');
+const { v4: uuidv4 } = require('uuid');
 
 // server 
 const app = express();
@@ -18,6 +19,7 @@ app.use(express.json())
 
 function newNote(body, notesArray) {
     const note = body
+    note.id = uuidv4(); 
     notesArray.push(note)
     fs.writeFileSync(
         path.join(__dirname, './db/db.json'),
@@ -29,7 +31,6 @@ function newNote(body, notesArray) {
 } 
 
 app.post('/api/notes', (req, res) => {
-    req.body.id = notes.length.toString()
     const note = newNote(req.body, notes)
     res.json(note)
 })
@@ -69,24 +70,27 @@ function findIndex(id, notesArray) {
         }
     }
 }
-
-app.delete('/api/notes/:id', (req, res) => {
-    let notes = JSON.parse(fs.readFileSync('./db/db.json'));
-    const notesIndex = notes.findIndex((note) => note.id === req.params.id)
-    if (notesIndex === -1) 
-    return res.status(404).json({})
-    notes.splice(notesIndex, 1)
-    fs.writeFileSync('./db/db.json', JSON.stringify(notes)) 
-    res.json(notes)
-}) 
 */
 
-// delete - not working 
+app.delete('/api/notes/:id', (req, res) => {
+    let {notes} = JSON.parse(fs.readFileSync('./db/db.json'));
+    //const notesIndex = notes.findIndex((note) => note.id === req.params.id)
+    const filteredNotes = notes.filter((note) => {
+        return note.id !== req.params.id;
+
+    })
+    fs.writeFileSync('./db/db.json', JSON.stringify({notes: filteredNotes})) 
+    res.json(filteredNotes)
+})
+
+
+/* delete - not working 
 app.delete('/api/notes/:id', (req, res) => {
     const params = req.params.id
     findIndex(params, notes);
     res.redirect('');
 })
+*/
 
 // route to notes.html 
 app.get('/notes', (req, res) => {
